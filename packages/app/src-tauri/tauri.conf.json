@@ -1,8 +1,8 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "@recall/app",
+  "productName": "Recall",
   "version": "0.0.1",
-  "identifier": "com.tauri.dev",
+  "identifier": "io.github.hieudoanm.recall",
   "build": {
     "frontendDist": "../../../docs",
     "devUrl": "http://localhost:3000",
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "@recall/app",
+        "title": "Recall",
         "width": 800,
         "height": 600,
         "resizable": true,
