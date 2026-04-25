@@ -4,17 +4,6 @@ import { useState } from 'react';
 
 const APPS = [
   {
-    id: 'recall',
-    href: '/app/recall',
-    title: 'Recall',
-    subtitle: 'Number Memory',
-    description:
-      'Train your short-term memory by recalling sequences of numbers. Increase difficulty progressively and track how far you can remember.',
-    meta: 'Digits · Sequence · Recall',
-    symbol: '🧠', // memory / cognition
-    symbolClass: 'text-[4.5rem] leading-none',
-  },
-  {
     id: 'pi',
     href: '/app/pi',
     title: 'Pi Memory',
@@ -24,6 +13,28 @@ const APPS = [
     meta: 'π · Digits · Precision',
     symbol: 'π', // iconic memory challenge
     symbolClass: 'text-[4.5rem] font-serif font-bold leading-none',
+  },
+  {
+    id: 'pitch',
+    href: '/app/pitch',
+    title: 'Pitch Perfect',
+    subtitle: 'Music Trainer',
+    description:
+      'Train your ear by identifying musical pitches and melodies. Challenge yourself to recognize notes and improve your musical ear over time.',
+    meta: 'Music · Pitch · Ear',
+    symbol: '🎵', // iconic memory challenge
+    symbolClass: 'text-[4.5rem] font-serif font-bold leading-none',
+  },
+  {
+    id: 'recall',
+    href: '/app/recall',
+    title: 'Recall',
+    subtitle: 'Number Memory',
+    description:
+      'Train your short-term memory by recalling sequences of numbers. Increase difficulty progressively and track how far you can remember.',
+    meta: 'Digits · Sequence · Recall',
+    symbol: '🧠', // memory / cognition
+    symbolClass: 'text-[4.5rem] leading-none',
   },
 ];
 
