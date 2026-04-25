@@ -1,7 +1,7 @@
-import { DownloadsTemplate } from '@recall/templates/DownloadsTemplate';
+import { DownloadsTemplate } from '@memory/templates/DownloadsTemplate';
 import { NextPage } from 'next';
 
-const APP_NAME = 'recall';
+const APP_NAME = 'memory';
 const REPO = `https://github.com/hieudoanm/${APP_NAME}/releases/download`;
 const VERSION = '0.0.1';
 

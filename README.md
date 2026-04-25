@@ -1,8 +1,8 @@
-# 🚀 [Recall](https://hieudoanm.github.io/recall/)
+# 🚀 [Memory](https://hieudoanm.github.io/memory/)
 
 ## 📚 Table of Contents
 
-- [🚀 Recall](#-recall)
+- [🚀 Memory](#-memory)
   - [📚 Table of Contents](#-table-of-contents)
   - [📖 1. Overview](#-1-overview)
   - [✨ 2. Features](#-2-features)
@@ -19,11 +19,11 @@
 
 ## 📖 1. Overview
 
-Recall is a focused project in this monorepo that delivers a practical tool with a clean user experience across platforms.
+Memory is a focused project in this monorepo that delivers a practical tool with a clean user experience across platforms.
 
 ## ✨ 2. Features
 
-1. [x] Core functionality tailored to Recall
+1. [x] Core functionality tailored to Memory
 2. [x] Web experience for quick access
 3. [x] CLI distribution for automation workflows
 4. [x] Mobile-ready build targets
@@ -31,17 +31,17 @@ Recall is a focused project in this monorepo that delivers a practical tool with
 
 ## 🎥 3. Demo
 
-- 🌐 [Live Demo](https://hieudoanm.github.io/recall/)
+- 🌐 [Live Demo](https://hieudoanm.github.io/memory/)
 
 ## 🚀 4. Usage
 
-- 🌐 [Web](https://hieudoanm.github.io/recall/)
-- 💻 [CLI](https://github.com/hieudoanm/recall/releases)
-- 📱 [Mobile](https://github.com/hieudoanm/recall/releases)
-- 🖥️ [Desktop](https://github.com/hieudoanm/recall/releases)
-  - 🍎 [MacOS](https://github.com/hieudoanm/recall/releases/tag/macos-latest)
-  - 🐧 [Ubuntu](https://github.com/hieudoanm/recall/releases/tag/ubuntu-latest)
-  - 🪟 [Windows](https://github.com/hieudoanm/recall/releases/tag/windows-latest)
+- 🌐 [Web](https://hieudoanm.github.io/memory/)
+- 💻 [CLI](https://github.com/hieudoanm/memory/releases)
+- 📱 [Mobile](https://github.com/hieudoanm/memory/releases)
+- 🖥️ [Desktop](https://github.com/hieudoanm/memory/releases)
+  - 🍎 [MacOS](https://github.com/hieudoanm/memory/releases/tag/macos-latest)
+  - 🐧 [Ubuntu](https://github.com/hieudoanm/memory/releases/tag/ubuntu-latest)
+  - 🪟 [Windows](https://github.com/hieudoanm/memory/releases/tag/windows-latest)
 
 ## 🛠️ 5. Development Stack
 

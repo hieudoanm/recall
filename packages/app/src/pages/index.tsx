@@ -1,4 +1,4 @@
-import { LandingTemplate } from '@recall/templates/LandingTemplate';
+import { LandingTemplate } from '@memory/templates/LandingTemplate';
 import { NextPage } from 'next';
 
 const HomePage: NextPage = () => {

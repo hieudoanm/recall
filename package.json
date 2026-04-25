@@ -1,17 +1,17 @@
 {
-  "name": "@recall/workspace",
+  "name": "@memory/workspace",
   "version": "0.0.1",
-  "description": "Recall",
+  "description": "Memory",
   "keywords": [
-    "recall"
+    "memory"
   ],
-  "homepage": "https://hieudoanm.github.io/recall",
+  "homepage": "https://hieudoanm.github.io/memory",
   "bugs": {
-    "url": "https://github.com/hieudoanm/recall/issues"
+    "url": "https://github.com/hieudoanm/memory/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/hieudoanm/recall.git"
+    "url": "git+ssh://git@github.com/hieudoanm/memory.git"
   },
   "license": "GPL-3.0",
   "author": "hieudoanm <hieumdoan@gmail.com> (https://hieudoanm.github.io)",

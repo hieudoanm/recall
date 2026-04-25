@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   reactStrictMode: true,
   images: { unoptimized: true },
-  basePath: NODE_ENV === 'development' ? '' : '/recall',
+  basePath: NODE_ENV === 'development' ? '' : '/memory',
   output: NODE_ENV === 'development' ? 'standalone' : 'export',
   distDir: NODE_ENV === 'development' ? '.next' : '../../docs',
 };

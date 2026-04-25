@@ -1,249 +1,168 @@
 import { NextPage } from 'next';
-import { useEffect, useRef, useState } from 'react';
-import { PiEyeFill, PiEyeSlashFill } from 'react-icons/pi';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
 
-type Phase = 'ready' | 'show' | 'input' | 'result';
-
-const TIME_PER_DIGIT = 650; // ms
-const MIN_TIME = 1200;
-const MAX_TIME = 6000;
-
-const chunkDigits = (value: string, size = 3) => {
-  const firstGroupLength = value.length % size || size;
-  const first = value.slice(0, firstGroupLength);
-  const rest = value
-    .slice(firstGroupLength)
-    .match(new RegExp(`.{1,${size}}`, 'g'))
-    ?.join(',');
-  return rest ? `${first},${rest}` : first;
-};
-
-const generateNumber = (length: number) =>
-  Array.from({ length }, () => Math.floor(Math.random() * 10)).join('');
-
-const highlightMistakes = (input: string, correct: string) =>
-  input
-    .split('')
-    .map((digit, i) =>
-      digit === correct[i]
-        ? digit
-        : `<span class="text-red-500 font-bold">${digit}</span>`
-    )
-    .join('');
+const APPS = [
+  {
+    id: 'recall',
+    href: '/app/recall',
+    title: 'Recall',
+    subtitle: 'Number Memory',
+    description:
+      'Train your short-term memory by recalling sequences of numbers. Increase difficulty progressively and track how far you can remember.',
+    meta: 'Digits · Sequence · Recall',
+    symbol: '🧠', // memory / cognition
+    symbolClass: 'text-[4.5rem] leading-none',
+  },
+  {
+    id: 'pi',
+    href: '/app/pi',
+    title: 'Pi Memory',
+    subtitle: 'Digit Trainer',
+    description:
+      'Memorize the digits of π with guided practice. Challenge yourself to recall longer sequences and improve precision over time.',
+    meta: 'π · Digits · Precision',
+    symbol: 'π', // iconic memory challenge
+    symbolClass: 'text-[4.5rem] font-serif font-bold leading-none',
+  },
+];
 
 const AppPage: NextPage = () => {
-  const [lastRoundFailed, setLastRoundFailed] = useState(false);
-  const [phase, setPhase] = useState<Phase>('ready');
-  const [level, setLevel] = useState(1);
-  const [number, setNumber] = useState('');
-  const [input, setInput] = useState('');
-  const [message, setMessage] = useState('');
-  const [countdown, setCountdown] = useState(0);
-  const [mask, setMask] = useState(false);
-  const [highStreak, setHighStreak] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('highStreak');
-      return stored ? parseInt(stored, 10) : 0;
-    }
-    return 0;
-  });
-
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const blurActive = () =>
-    (document.activeElement as HTMLElement | null)?.blur();
-
-  const clearTimers = () => {
-    if (timerRef.current) clearTimeout(timerRef.current);
-    if (intervalRef.current) clearInterval(intervalRef.current);
-  };
-
-  const startRound = (nextLevel = level) => {
-    clearTimers();
-
-    const value = generateNumber(nextLevel);
-    const duration = Math.min(
-      MAX_TIME,
-      Math.max(MIN_TIME, nextLevel * TIME_PER_DIGIT)
-    );
-
-    setNumber(value);
-    setInput('');
-    setPhase('show');
-    setCountdown(Math.ceil(duration / 1000));
-
-    // countdown ticker
-    intervalRef.current = setInterval(
-      () => setCountdown((c) => Math.max(0, c - 1)),
-      1000
-    );
-
-    timerRef.current = setTimeout(() => {
-      clearTimers();
-      setCountdown(0);
-      setPhase('input');
-      inputRef.current?.focus();
-    }, duration);
-  };
-
-  const start = () => {
-    blurActive();
-    setLevel(1);
-    setMessage('');
-    startRound(1);
-  };
-
-  const updateHighStreak = (newStreak: number) => {
-    setHighStreak((prev) => {
-      const high = Math.max(prev, newStreak);
-      localStorage.setItem('highStreak', high.toString());
-      return high;
-    });
-  };
-  const submit = () => {
-    blurActive();
-    if (input === number) {
-      setMessage('Correct! Level up 🎉');
-      setLevel((l) => l + 1);
-      updateHighStreak(level);
-      setLastRoundFailed(false); // round succeeded
-    } else {
-      const highlighted = highlightMistakes(input, number);
-      setMessage(
-        `Wrong 😢 The number was <span class="font-bold">${chunkDigits(
-          number
-        )}</span><br/>Your input: <span>${highlighted}</span>`
-      );
-      setLevel(1);
-      setLastRoundFailed(true); // round failed, reset game
-    }
-    setPhase('result');
-  };
-
-  const next = () => {
-    blurActive();
-    setMessage('');
-    startRound(level);
-  };
-
-  // Keyboard support
-  const handleKeyDown = (keyboardEvent: React.KeyboardEvent) => {
-    if (keyboardEvent.key !== 'Enter') return;
-    if (phase === 'input') return; // form handles Enter
-    if (phase === 'ready') start();
-    if (phase === 'result') next();
-  };
-
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.key !== 'Enter') return;
-      if (phase === 'ready') start();
-      if (phase === 'input' && input) submit();
-      if (phase === 'result') next();
-    };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phase, input]);
+  const router = useRouter();
+  const [hovered, setHovered] = useState<string | null>(null);
 
   return (
     <div
-      className="bg-base-200 flex min-h-screen items-center justify-center p-4"
-      tabIndex={0}
-      onKeyDown={handleKeyDown}>
-      <div className="card bg-base-100 w-full max-w-sm shadow-xl">
-        <div className="card-body space-y-4 text-center">
-          <h1 className="text-3xl font-bold tracking-wide">Recall</h1>
+      data-theme="luxury"
+      className="bg-base-100 relative flex min-h-screen w-screen flex-col items-center justify-center overflow-hidden pt-16 pb-14">
+      {/* Vignette */}
+      <div
+        className="pointer-events-none fixed inset-0 z-0"
+        style={{
+          background:
+            'radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,0.75) 100%)',
+        }}
+      />
 
-          {/* Badges Section */}
-          <div className="flex justify-center gap-2">
-            <span className="badge badge-secondary">Level {level}</span>
-            <span className="badge badge-accent">🏆 Best {highStreak}</span>
-          </div>
+      {/* Top rule */}
+      <div className="via-primary fixed top-0 right-0 left-0 z-10 h-[3px] bg-gradient-to-r from-transparent to-transparent" />
 
-          {/* Countdown Section */}
-          {phase === 'show' && (
-            <div className="mt-2 flex justify-center">
-              <span className="badge badge-info badge-xl">⏱ {countdown}s</span>
-            </div>
-          )}
-
-          {phase === 'ready' && (
-            <>
-              <p className="text-base-content/70">
-                Memorize the number and type it back.
-              </p>
-              <button className="btn btn-primary" onClick={start}>
-                Start
-              </button>
-              <p className="text-xs opacity-50">Press Enter</p>
-            </>
-          )}
-
-          {phase === 'show' && (
-            <div className="font-mono text-4xl tracking-widest">
-              {chunkDigits(number)}
-            </div>
-          )}
-
-          {phase === 'input' && (
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                if (input) submit();
-              }}
-              className="relative space-y-2">
-              <div className="relative flex items-center">
-                <input
-                  autoFocus
-                  ref={inputRef}
-                  type={mask ? 'password' : 'text'} // keep mask functionality
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  className="input input-bordered w-full text-center text-xl tracking-widest"
-                  placeholder="Type here"
-                  maxLength={number.length} // prevent extra chars
-                />
-                <button
-                  type="button"
-                  className="absolute right-2"
-                  onClick={() => setMask((m) => !m)}>
-                  {mask ? (
-                    <PiEyeSlashFill className="h-5 w-5 text-gray-500" />
-                  ) : (
-                    <PiEyeFill className="h-5 w-5 text-gray-500" />
-                  )}
-                </button>
-              </div>
-              <button
-                type="submit"
-                className="btn btn-success w-full"
-                disabled={input.length !== number.length} // enable only when input matches number length
-              >
-                Submit
-              </button>
-              <p className="text-xs opacity-50">
-                {input.length}/{number.length} digits
-              </p>
-            </form>
-          )}
-
-          {phase === 'result' && (
-            <div className="space-y-2">
-              <p
-                className="text-center font-medium"
-                dangerouslySetInnerHTML={{ __html: message }}></p>
-              <button className="btn btn-secondary w-full" onClick={next}>
-                {lastRoundFailed ? 'Start Over' : 'Next'}
-              </button>
-              <p className="text-xs opacity-50">Press Enter</p>
-            </div>
-          )}
+      {/* Header */}
+      <div className="relative z-10 mb-16 flex flex-col items-center gap-3 text-center">
+        <span className="text-primary/40 text-[0.55rem] tracking-[0.5em] uppercase">
+          Cognitive Toolkit
+        </span>
+        <h1 className="text-base-content font-serif text-4xl font-bold tracking-wide">
+          Memory Games
+        </h1>
+        <div className="mt-1 flex items-center gap-3">
+          <div className="bg-primary/30 h-px w-12" />
+          <div className="bg-primary h-1 w-1 rounded-full" />
+          <div className="bg-primary/30 h-px w-12" />
         </div>
+        <p className="text-base-content/40 mt-1 text-[0.65rem] tracking-[0.2em] uppercase">
+          Focus · Recall · Improve
+        </p>
       </div>
+
+      {/* Grid */}
+      <div className="relative z-10 grid w-full max-w-3xl grid-cols-1 gap-px px-6 sm:grid-cols-2">
+        {APPS.map((app, i) => {
+          const isHovered = hovered === app.id;
+          return (
+            <button
+              key={app.id}
+              onClick={() => router.push(app.href)}
+              onMouseEnter={() => setHovered(app.id)}
+              onMouseLeave={() => setHovered(null)}
+              className={[
+                'group relative flex flex-col items-center justify-between gap-8',
+                'w-full cursor-pointer px-8 py-12 text-center',
+                'border-primary/10 border transition-all duration-500',
+                'focus-visible:ring-primary outline-none focus-visible:ring-1',
+                isHovered
+                  ? 'bg-primary/[0.06] border-primary/30'
+                  : 'bg-base-100/40 hover:bg-primary/[0.04]',
+              ].join(' ')}>
+              {/* Number */}
+              <span className="text-primary/20 self-start text-[0.5rem] tracking-[0.4em] uppercase">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+
+              {/* Symbol */}
+              <div
+                className={[
+                  'text-base-content transition-all duration-500',
+                  isHovered
+                    ? 'text-primary scale-110 opacity-90'
+                    : 'opacity-25',
+                ].join(' ')}>
+                <span className={app.symbolClass}>{app.symbol}</span>
+              </div>
+
+              {/* Text */}
+              <div className="flex flex-col items-center gap-2">
+                <h2 className="text-base-content font-serif text-lg font-bold tracking-wider">
+                  {app.title}
+                </h2>
+                <span className="text-primary/60 text-[0.6rem] tracking-[0.3em] uppercase">
+                  {app.subtitle}
+                </span>
+
+                <div className="bg-primary/15 my-1 h-px w-8" />
+
+                <p className="text-base-content/40 max-w-[200px] text-[0.65rem] leading-relaxed tracking-wide">
+                  {app.description}
+                </p>
+
+                <span className="text-primary/30 mt-1 text-[0.55rem] tracking-[0.2em] uppercase">
+                  {app.meta}
+                </span>
+              </div>
+
+              {/* CTA */}
+              <div
+                className={[
+                  'flex items-center gap-2 transition-all duration-300',
+                  isHovered
+                    ? 'translate-y-0 opacity-100'
+                    : 'translate-y-1 opacity-0',
+                ].join(' ')}>
+                <span className="text-primary text-[0.6rem] tracking-[0.3em] uppercase">
+                  Begin
+                </span>
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                  <path
+                    d="M4 8h8M8 4l4 4-4 4"
+                    stroke="currentColor"
+                    strokeWidth="1.4"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
+
+              {/* Glow */}
+              <div
+                className={[
+                  'via-primary absolute right-0 bottom-0 left-0 h-[2px] bg-gradient-to-r from-transparent to-transparent transition-all duration-500',
+                  isHovered ? 'opacity-100' : 'opacity-0',
+                ].join(' ')}
+              />
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Footer */}
+      <div className="relative z-10 mt-12 text-center">
+        <p className="text-base-content/20 text-[0.5rem] tracking-[0.25em] uppercase">
+          Memory · Recall · Focus · Precision · Cognitive Training
+        </p>
+      </div>
+
+      {/* Bottom rule */}
+      <div className="via-primary fixed right-0 bottom-0 left-0 z-10 h-[3px] bg-gradient-to-r from-transparent to-transparent" />
     </div>
   );
 };
